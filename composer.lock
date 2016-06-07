@@ -1,0 +1,65 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "hash": "a2cf6a3de96de52d56a333d9fbeceba8",
+    "content-hash": "43a7b27c575565f7240f5278f446236b",
+    "packages": [
+        {
+            "name": "activecollab/activecollab-feather-sdk",
+            "version": "3.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/activecollab/activecollab-feather-sdk.git",
+                "reference": "cfa0b3efd8f19b29bdb55015b896133ff64ab602"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/activecollab/activecollab-feather-sdk/zipball/cfa0b3efd8f19b29bdb55015b896133ff64ab602",
+                "reference": "cfa0b3efd8f19b29bdb55015b896133ff64ab602",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.6.0"
+            },
+            "require-dev": {
+                "fabpot/php-cs-fixer": "~1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ActiveCollab\\SDK\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ilija Studen",
+                    "email": "ilija.studen@gmail.com"
+                }
+            ],
+            "description": "This is a simple PHP library that makes communication with Active Collab API easy",
+            "homepage": "https://github.com/activecollab/activecollab-feather-sdk",
+            "keywords": [
+                "activecollab",
+                "api",
+                "sdk"
+            ],
+            "time": "2016-01-16 13:15:57"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}
