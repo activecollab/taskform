@@ -11,12 +11,14 @@
         <div class="container" id="main-form">
             <h1>Report a bug</h1>
 
-            <p>This form is a sample. We put it together for two reasons:</p>
+            <div class="bg-info">
+                <p>This form is a sample. We put it together for two reasons:</p>
 
-            <ul>
-                <li>It demonstrates that you can put a lot of fields, of different types, and that form will properly collect them,</li>
-                <li>Active Collab customer care team actually uses a form like this when they submit a bug to our developers.</li>
-            </ul>
+                <ul>
+                    <li>It demonstrates that you can put a lot of fields of different types, and that form will properly collect them,</li>
+                    <li>Active Collab Customer Care team actually uses a form like this when they submit a bug to our developers.</li>
+                </ul>
+            </div>
 
             <form action="submit.php" method="post" onsubmit="myButton.disabled = true; return true;">
                 <div class="form-group">
@@ -101,7 +103,7 @@
                     <input class="form-control" name="reported-by" placeholder="Add your e-mail"  required />
                 </div>
 
-                <div align="center">
+                <div class="form-group">
                     <input type="submit" name="myButton" value="Submit" /><br><br><br>
                 </div>
             </form>
