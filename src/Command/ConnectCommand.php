@@ -8,19 +8,75 @@
 
 namespace ActiveCollab\TaskForm\Command;
 
+use ActiveCollab\SDK\Client;
 use ActiveCollab\SDK\ClientInterface;
 use ActiveCollab\SDK\TokenInterface;
+use Exception;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 
 /**
  * @package ActiveCollab\TaskForm\Command
  */
-abstract class AuthenticationCommand extends Command
+abstract class ConnectCommand extends Command
 {
+    /**
+     * Get Active Collab SDK Client instance.
+     *
+     * @param  InputInterface  $input
+     * @param  OutputInterface $output
+     * @return TokenInterface
+     */
+    abstract protected function getToken(InputInterface $input, OutputInterface $output);
+
+    /**
+     * Configure authentication arguments and options.
+     */
+    protected function configureAuthArgumentsAndOptions()
+    {
+        $this
+            ->addArgument('email', InputArgument::REQUIRED, 'Your email address')
+            ->addOption('password', 'p', InputOption::VALUE_REQUIRED, 'Your password')
+            ->addOption('dont-verify-ssl-peer', '', InputArgument::OPTIONAL, 'Skip SSL peer verification');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function execute(InputInterface $input, OutputInterface $output)
+    {
+        try {
+            if (is_file($this->getConfigFilePath())) {
+                throw new RuntimeException("Config file '{$this->getConfigFilePath()}' already exists");
+            }
+
+            $token = $this->getToken($input, $output);
+
+            $client = new Client($token);
+
+            $this->checkUserRole($client);
+
+            $project_id = $this->getProjectId($input, $output, $client);
+            $output->writeln("You have selected project <comment>#{$project_id}</comment>. Writing config file...");
+
+            $this->writeConfigFile($output, $token, $project_id);
+
+            $output->writeln('');
+            $output->writeln('All done, <info>connection to Active Collab has been configured</info>. Form can now be used to submit to task in Active Collab.');
+        } catch (Exception $e) {
+            $output->writeln('<error>Error</error>: ' . $e->getMessage());
+
+            return 1;
+        }
+
+        return 0;
+    }
+
     /**
      * Return email argument.
      *

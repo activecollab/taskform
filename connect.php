@@ -20,6 +20,6 @@ if (php_sapi_name() != 'cli') {
 require_once 'vendor/autoload.php';
 
 $application = new \Symfony\Component\Console\Application('Active Collab TaskForm', '1.0.0');
-$application->add(new \ActiveCollab\TaskForm\Command\CloudCommand());
-$application->add(new \ActiveCollab\TaskForm\Command\SelfHostedCommand());
+$application->add(new \ActiveCollab\TaskForm\Command\ConnectCloudCommand());
+$application->add(new \ActiveCollab\TaskForm\Command\ConnectSelfHostedCommand());
 $application->run();
