@@ -8,107 +8,179 @@
 
 namespace ActiveCollab\TaskForm;
 
+use ActiveCollab\SDK\Client;
 use ActiveCollab\SDK\Exceptions\AppException;
+use ActiveCollab\SDK\Token;
 
-$codeversion = $_POST['code-version'];
-$name = $_POST['name'];
-$url = $_POST['url'];
-$expected = $_POST['expected'];
-$actual = $_POST['actual'];
-$email = $_POST['reported-by'];
-if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    $emailErr = 'Invalid email format';
-}
-$desc = $_POST['desc'];
-$reproducible = '';
-if (!empty($_POST['reproducible'])) {
-    $reproducible = $_POST['reproducible'][0];
-}
-$browser = '';
-if (!empty($_POST['browser'])) {
-    foreach ($_POST['browser'] as $check) {
-        $browser .= $check . '<br>';
+require_once 'vendor/autoload.php';
+
+/**
+ * Equivalent to htmlspecialchars(), but allows &#[0-9]+ (for unicode).
+ *
+ * @param  string $str
+ * @return string
+ */
+function clean($str)
+{
+    if (is_scalar($str)) {
+        $str = preg_replace('/&(?!#(?:[0-9]+|x[0-9A-F]+);?)/si', '&amp;', $str);
+        $str = str_replace(['<', '>', '"'], ['&lt;', '&gt;', '&quot;'], $str);
+
+        return $str;
+    } else {
+        return '';
     }
 }
-$prod = '';
-$produced = '';
-if (!empty($_POST['produced'])) {
-    foreach ($_POST['produced'] as $check1) {
-        switch ($check1) {
-            case 1:
-                $prod .= ' ,client cloud account';
-                break;
-            case 2:
-                $prod .= ' ,client self-hosted account';
-                break;
-            case 3:
-                $prod .= ' ,all cloud accounts';
-                break;
-            case 4:
-                $prod .= ' ,development activecollab';
-                break;
-            case 5:
-                $prod .= ' ,everywhere';
-                break;
-            default:
-                $prod .= '';
-                break;
+
+/**
+ * Render an error message.
+ *
+ * @param string      $message
+ * @param int         $code
+ * @param string[]|string|null $reason
+ */
+function http_error($message, $code, $reason = null)
+{
+    header($_SERVER['SERVER_PROTOCOL'] . " $code $message", true, $code);
+    print '<h1>' . clean($message) . '</h1>';
+
+    if (!empty($reason)) {
+        if (is_scalar($reason)) {
+            print '<p>' . clean($reason) . '</p>';
+        } elseif (is_array($reason)) {
+            print '<p>Form submission failed because:</p>';
+            print '<ul>';
+
+            foreach ($reason as $reason_line) {
+                print '<li>' . clean($reason_line) . '</li>';
+            }
+
+            print '</ul>';
         }
     }
-}
-$prod = ltrim($prod, ',');
-switch ($reproducible) {
-    case '1':
-        $reproducible = 'Yes';
-        break;
-    case '2':
-        $reproducible = 'Occasionally';
-        break;
-    case '3':
-        $reproducible = 'One Time';
-        break;
-    case '4':
-        $reproducible = 'No';
-        break;
-    default:
-        $reproducible = 'Non';
-        break;
-}
-// Location of autoload.php
-require_once 'vendor/autoload.php';
-// Provide name of your company, name of the app that you are developing, your email address and password.
-$authenticator = new \ActiveCollab\SDK\Authenticator\Cloud('rasa', 'My Awesome Application', 'rasaradoslav@gmail.com', 'rasa0037');
-// Issue a token for account #123456789.
-$token = $authenticator->issueToken(127799);
-// Did we get it?
-if ($token instanceof \ActiveCollab\SDK\TokenInterface) {
-} else {
-    print "Invalid response\n";
+
     die();
 }
-$client = new \ActiveCollab\SDK\Client($token);
-$descr = '<strong>Code version: </strong> ' . $codeversion . '<br>';
-$descr .= '<strong>Browser: </strong>' . $browser . '<br>';
-$descr .= '<strong>URL: </strong>' . $url . '<br>';
-$descr .= '<strong>Is it reproduced: </strong>' . $reproducible . '<br>';
-$descr .= '<strong>Where can be reproduced: </strong>' . $prod . '<br>';
-$descr .= '<strong>Description: </strong><br>' . $desc . '<br>';
-$descr .= '<strong>Expected Results: </strong><br>' . $expected . '<br>';
-$descr .= '<strong>Actula Results: </strong><br>' . $actual . '<br>';
-$descr .= '<strong>Reported by: </strong><br>' . $email . '<br>';
-// Creating task
+
+
+if (is_file(__DIR__ . '/config.php')) {
+    $config = require 'config.php';
+
+    foreach (['token', 'url', 'project_id'] as $required_config_option) {
+        if (empty($config[$required_config_option])) {
+            http_error('Internal Server Error', 500, "Required config option $required_config_option not found in configuration file.");
+        }
+    }
+} else {
+    http_error('Internal Server Error', 500, 'Task form is not connected to Active Collab. Please run connect.php script using command line to make a connection.');
+}
+
+if (empty($_POST)) {
+    http_error('Bad Request', 400, 'POST data expected.');
+}
+
+print '<pre>';
+var_dump($_POST);
+print '</pre>';
+
+if (array_key_exists('name', $_POST)) {
+    $name = trim($_POST['name']);
+    unset($_POST['name']);
+} else {
+    $name = '';
+}
+
+if (array_key_exists('body', $_POST)) {
+    $body = trim($_POST['body']);
+    unset($_POST['body']);
+} else {
+    $body = '';
+}
+
+if (array_key_exists('submitted_by_name', $_POST)) {
+    $submitted_by_name = trim($_POST['submitted_by_name']);
+    unset($_POST['submitted_by_name']);
+} else {
+    $submitted_by_name = '';
+}
+
+if (array_key_exists('submitted_by_email', $_POST)) {
+    $submitted_by_email = trim($_POST['submitted_by_email']);
+    unset($_POST['submitted_by_email']);
+} else {
+    $submitted_by_email = '';
+}
+
+$validation_errors = [];
+
+foreach (['name' => 'Task name', 'submitted_by_name' => 'Your name', 'submitted_by_email' => 'Your email address'] as $required_field_name => $verbose_required_field_name) {
+    if (empty($$required_field_name)) {
+        $validation_errors[] = "$verbose_required_field_name is required";
+    }
+}
+
+if ($submitted_by_email && !filter_var($submitted_by_email, FILTER_VALIDATE_EMAIL)) {
+    $validation_errors[] = 'Your email address is not valid';
+}
+
+if (!empty($validation_errors)) {
+    http_error('Bad Request', 400, $validation_errors);
+}
+
+$additional_body_lines = [];
+
+foreach ($_POST as $k => $v) {
+    $attribute_name = ucfirst(str_replace(['_', '-'], [' ', ' '], $k));
+    $attribute_value = trim(is_array($v) ? implode(', ', $v) : $v);
+
+    if (empty($attribute_value) && (is_string($attribute_value) || $attribute_value === null)) {
+        $attribute_value = '--';
+    }
+
+    $body_line = '<strong>' . clean($attribute_name) . ':</strong>';
+
+    if (nl2br($attribute_value) != $attribute_value) {
+        $body_line .= '<br>' . nl2br(clean($attribute_value));
+    } else {
+        $body_line .= ' ' . clean($attribute_value);
+    }
+
+    $additional_body_lines[] = $body_line;
+}
+
+// Clean up body, if it is present
+if ($body) {
+    $body = nl2br(clean($body));
+}
+
+// We have both body and additional body lines
+if (!empty($body) && !empty($additional_body_lines)) {
+    $body = $body . '<br><br><br>' . implode('<br><br>', $additional_body_lines);
+
+// We have only additional body lines
+} elseif (empty($body) && !empty($additional_body_lines)) {
+    $body = implode('<br><br>', $additional_body_lines);
+}
+
+$token = new Token($config['token'], $config['url']);
+$client = new Client($token);
+
 try {
     // Location of task
-    $result = $client->post('projects/1/tasks', [
-
-// Locaion of task
-        'name' => 'Bug report  ' . $name,
-        'assignee_id' => 1,
-        'task_list_id' => 1,
-// Discription of task
-        'body' => $descr,
+    $result = $client->post("projects/{$config['project_id']}/tasks", [
+        'name' => $name,
+        'body' => $body,
+        'created_by_id' => 0,
+        'created_by_name' => $submitted_by_name,
+        'created_by_email' => $submitted_by_email,
+//        'task_list_id' => 1,
     ]);
+
+    if ($result->isJson()) {
+        print '<pre>';
+        print_r($result->getJson());
+        print '</pre>';
+    }
 } catch (AppException $e) {
     print $e->getMessage() . '<br><br>';
-// var_dump($e->getServerResponse()); (need more info?)
 }

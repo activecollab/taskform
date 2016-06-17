@@ -23,12 +23,12 @@
             <form action="submit.php" method="post" onsubmit="myButton.disabled = true; return true;">
                 <div class="form-group">
                     <label for="exampleInputPrica">Bug name:</label>
-                    <input class="form-control" name="name"  placeholder="Add bug name"  required>
+                    <input class="form-control" name="name"  placeholder="Add bug name" required>
                 </div>
 
                 <div class="form-group">
                     <label for="exampleInputPrica">Code version:</label>
-                    <input class="form-control" name="code-version"  placeholder="Add code version"  required>
+                    <input class="form-control" name="code-version"  placeholder="Add code version">
                 </div>
 
                 <div class="form-group">
@@ -49,7 +49,7 @@
 
                 <div class="form-group">
                     <label for="exampleInputPrica">URL:</label>
-                    <input class="form-control" name="url"  placeholder="Add url"  required>
+                    <input class="form-control" name="url"  placeholder="Add URL">
                 </div>
 
                 <div class="form-group">
@@ -90,17 +90,20 @@
                 </div>
 
                 <label>Description:</label>
-                <textarea class="form-control" rows="5" name="desc" placeholder="Add discription"  required></textarea><br>
+                <textarea class="form-control" rows="5" name="body" placeholder="Add discription"></textarea><br>
 
                 <label>Expected results:</label>
-                <textarea class="form-control" rows="5" name="expected" placeholder="Add expected results"  required></textarea><br>
+                <textarea class="form-control" rows="5" name="expected" placeholder="Add expected results"></textarea><br>
 
                 <label>Actual results:</label>
-                <textarea class="form-control" rows="5" name="actual" placeholder="Add actual results"  required></textarea><br>
+                <textarea class="form-control" rows="5" name="actual" placeholder="Add actual results"></textarea><br>
 
                 <div class="form-group">
-                    <label for="exampleInputName">Reported by</label>
-                    <input class="form-control" name="reported-by" placeholder="Add your e-mail"  required />
+                    <label for="exampleInputName">Your Name</label>
+                    <input class="form-control" name="submitted_by_name" placeholder="Add your name" required>
+
+                    <label for="exampleInputName">Your Email Address</label>
+                    <input class="form-control" name="submitted_by_email" placeholder="Add your e-mail address" required>
                 </div>
 
                 <div class="form-group">
