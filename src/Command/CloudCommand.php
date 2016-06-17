@@ -61,6 +61,8 @@ class CloudCommand extends AuthenticationCommand
 
             $client = new Client($token);
 
+            $this->checkUserRole($client);
+
             $project_id = $this->getProjectId($input, $output, $client);
             $output->writeln("You have selected project <comment>#{$project_id}</comment>. Writing config file...");
 

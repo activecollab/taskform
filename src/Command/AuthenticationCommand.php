@@ -9,7 +9,6 @@
 namespace ActiveCollab\TaskForm\Command;
 
 use ActiveCollab\SDK\ClientInterface;
-use ActiveCollab\SDK\ResponseInterface;
 use ActiveCollab\SDK\TokenInterface;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
@@ -89,6 +88,38 @@ abstract class AuthenticationCommand extends Command
     }
 
     /**
+     * Check user session and user role.
+     *
+     * @param ClientInterface $client
+     */
+    public function checkUserRole(ClientInterface $client)
+    {
+        $response = $client->get('/user-session');
+
+        if ($response->isJson()) {
+            $user_session = $response->getJson();
+
+            if (!empty($user_session['logged_user_id'])) {
+                $response = $client->get("/users/{$user_session['logged_user_id']}");
+
+                if ($response->isJson()) {
+                    $user = $response->getJson();
+
+                    if (empty($user['singile']['type']) || $user['singile']['type'] == 'Client') {
+                        throw new RuntimeException('Clients are not allowed to set up task forms');
+                    }
+                } else {
+                    throw new RuntimeException('Invalid project names response');
+                }
+            } else {
+                throw new RuntimeException('ID of logged user not found in user session');
+            }
+        } else {
+            throw new RuntimeException('Invalid project names response');
+        }
+    }
+
+    /**
      * Ask user to pick an account that they want to authenticate with.
      *
      * @param  InputInterface  $input
@@ -98,11 +129,10 @@ abstract class AuthenticationCommand extends Command
      */
     protected function getProjectId(InputInterface $input, OutputInterface $output, ClientInterface $client)
     {
-        /** @var ResponseInterface $projects_reponse */
-        $projects_reponse = $client->get('projects/names');
+        $response = $client->get('projects/names');
 
-        if ($projects_reponse->isJson()) {
-            $project_id_names_map = $projects_reponse->getJson();
+        if ($response->isJson()) {
+            $project_id_names_map = $response->getJson();
         } else {
             throw new RuntimeException('Invalid project names response');
         }
@@ -142,7 +172,7 @@ abstract class AuthenticationCommand extends Command
      */
     protected function writeConfigFile(OutputInterface $output, TokenInterface $token, $project_id)
     {
-        $config_file_path = dirname(__DIR__, 2) . '/config.php';
+        $config_file_path = $this->getConfigFilePath();
 
         $config_file_written = file_put_contents($config_file_path, "<?php\n\n" . 'return ' . var_export([
             'url' => $token->getUrl(),
@@ -155,5 +185,15 @@ abstract class AuthenticationCommand extends Command
         } else {
             throw new RuntimeException("Failed to write config to '$config_file_written'");
         }
+    }
+
+    /**
+     * Return config file path.
+     *
+     * @return string
+     */
+    protected function getConfigFilePath()
+    {
+        return dirname(__DIR__, 2) . '/config.php';
     }
 }
