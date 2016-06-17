@@ -105,7 +105,9 @@ abstract class AuthenticationCommand extends Command
                 if ($response->isJson()) {
                     $user = $response->getJson();
 
-                    if (empty($user['singile']['type']) || $user['singile']['type'] == 'Client') {
+                    if (empty($user['single']['class'])) {
+                        throw new RuntimeException('User role could not be read');
+                    } elseif ($user['single']['class'] == 'Client') {
                         throw new RuntimeException('Clients are not allowed to set up task forms');
                     }
                 } else {
@@ -150,7 +152,7 @@ abstract class AuthenticationCommand extends Command
 
         $output->writeln('');
 
-        $project_id = (int) $this->getHelper('question')->ask($input, $output, (new Question("Which one would you like to use? Please enter project #:\n")));
+        $project_id = (int) trim($this->getHelper('question')->ask($input, $output, (new Question("Which one would you like to use? Please enter project #:\n"))), '#');
 
         if ($project_id) {
             if (array_key_exists($project_id, $project_id_names_map)) {

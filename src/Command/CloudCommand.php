@@ -42,6 +42,10 @@ class CloudCommand extends AuthenticationCommand
     public function execute(InputInterface $input, OutputInterface $output)
     {
         try {
+            if (is_file($this->getConfigFilePath())) {
+                throw new RuntimeException("Config file '{$this->getConfigFilePath()}' already exists");
+            }
+
             $email = $this->getEmail($input);
             $password = $this->getPassword($input, $output);
             $ssl_verify_peer = $this->getSslVerifyPeer($input);
@@ -69,7 +73,7 @@ class CloudCommand extends AuthenticationCommand
             $this->writeConfigFile($output, $token, $project_id);
 
             $output->writeln('');
-            $output->writeln('All done, <info>connection to Active Collab has been configured</info>.');
+            $output->writeln('All done, <info>connection to Active Collab has been configured</info>. Form can now be used to submit to task in Active Collab.');
         } catch (Exception $e) {
             $output->writeln('<error>Error</error>: ' . $e->getMessage());
 
@@ -102,7 +106,7 @@ class CloudCommand extends AuthenticationCommand
 
         $output->writeln('');
 
-        $account_id = (int) $this->getHelper('question')->ask($input, $output, (new Question("Which one would you like to use? Please enter account #:\n")));
+        $account_id = (int) trim($this->getHelper('question')->ask($input, $output, (new Question("Which one would you like to use? Please enter account #:\n"))), '#');
 
         if ($account_id) {
             $account_found = false;
