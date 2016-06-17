@@ -4,12 +4,12 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "6c99b94d13d2aa4588a8307d6e64a0c9",
-    "content-hash": "63b6e48ca13ca7d0fbc53dbbf09ad571",
+    "hash": "4c78f5edf3d6bde2f19728d1d31d8831",
+    "content-hash": "492c4af9060983769e029539f73009b4",
     "packages": [
         {
             "name": "activecollab/activecollab-feather-sdk",
-            "version": "dev-master",
+            "version": "3.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/activecollab/activecollab-feather-sdk.git",
@@ -539,9 +539,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "activecollab/activecollab-feather-sdk": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
