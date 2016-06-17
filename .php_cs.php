@@ -1,13 +1,13 @@
 <?php
 
 /*
- * This library is free software, and it is part of the Active Collab SDK project. Check LICENSE for details.
+ * This library is free software, and it is part of the Active Collab TaskForm project. Check LICENSE for details.
  *
  * (c) A51 doo <info@activecollab.com>
  */
 
 $header = <<<EOF
-This library is free software, and it is part of the Active Collab SDK project. Check LICENSE for details.
+This library is free software, and it is part of the Active Collab TaskForm project. Check LICENSE for details.
 
 (c) A51 doo <info@activecollab.com>
 EOF;
