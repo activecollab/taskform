@@ -35,8 +35,8 @@ function clean($str)
 /**
  * Render an error message.
  *
- * @param string      $message
- * @param int         $code
+ * @param string               $message
+ * @param int                  $code
  * @param string[]|string|null $reason
  */
 function http_error($message, $code, $reason = null)
