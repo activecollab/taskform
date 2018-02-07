@@ -6,6 +6,10 @@
  * (c) A51 doo <info@activecollab.com>
  */
 
+use ActiveCollab\TaskForm\Command\ConnectCloudCommand;
+use ActiveCollab\TaskForm\Command\ConnectSelfHostedCommand;
+use Symfony\Component\Console\Application;
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -13,13 +17,13 @@ ini_set('display_errors', 1);
  * @package ActiveCollab.tasks
  */
 if (php_sapi_name() != 'cli') {
-    print "This script is available via CLI only\n";
+    print "This script is only available via Command Line (CLI)\n";
     exit(1);
 }
 
 require_once 'vendor/autoload.php';
 
-$application = new \Symfony\Component\Console\Application('Active Collab TaskForm', '1.0.0');
-$application->add(new \ActiveCollab\TaskForm\Command\ConnectCloudCommand());
-$application->add(new \ActiveCollab\TaskForm\Command\ConnectSelfHostedCommand());
+$application = new Application('Active Collab TaskForm', '1.0.0');
+$application->add(new ConnectCloudCommand());
+$application->add(new ConnectSelfHostedCommand());
 $application->run();
