@@ -42,7 +42,8 @@ abstract class ConnectCommand extends Command
         $this
             ->addArgument('email', InputArgument::REQUIRED, 'Your email address')
             ->addOption('password', 'p', InputOption::VALUE_REQUIRED, 'Your password')
-            ->addOption('dont-verify-ssl-peer', '', InputArgument::OPTIONAL, 'Skip SSL peer verification');
+            ->addOption('dont-verify-ssl-peer', '', InputArgument::OPTIONAL, 'Skip SSL peer verification')
+            ->addOption('debug', '', InputOption::VALUE_NONE, 'Show debug information');
     }
 
     /**
@@ -196,7 +197,7 @@ abstract class ConnectCommand extends Command
         }
 
         if (empty($project_id_names_map)) {
-            throw new \RuntimeException("You don't have access to any of the projects in that Active Collab");
+            throw new RuntimeException("You don't have access to any of the projects in that Active Collab");
         }
 
         $output->writeln('Here is a list of active projects that you have access to:');
@@ -208,16 +209,19 @@ abstract class ConnectCommand extends Command
 
         $output->writeln('');
 
-        $project_id = (int) trim($this->getHelper('question')->ask($input, $output, (new Question("Which one would you like to use? Please enter project #:\n"))), '#');
+        $project_id = (int) trim(
+            $this->getHelper('question')->ask($input, $output, (new Question("Which one would you like to use? Please enter project #:\n"))),
+            '#'
+        );
 
         if ($project_id) {
             if (array_key_exists($project_id, $project_id_names_map)) {
                 return $project_id;
             } else {
-                throw new \RuntimeException("You don't have access to project #{$project_id}");
+                throw new RuntimeException("You don't have access to project #{$project_id}");
             }
         } else {
-            throw new \RuntimeException('Account ID is not set');
+            throw new RuntimeException('Account ID is not set');
         }
     }
 
@@ -243,6 +247,15 @@ abstract class ConnectCommand extends Command
         } else {
             throw new RuntimeException("Failed to write config to '$config_file_written'");
         }
+    }
+
+    /**
+     * @param  InputInterface $input
+     * @return bool
+     */
+    protected function isDebug(InputInterface $input)
+    {
+        return $input->getOption('debug');
     }
 
     /**
