@@ -4,21 +4,24 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Forma</title>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+        <title>ActiveCollab Task Form Example</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     </head>
     <body>
+        <div class="alert alert-success" role="alert">
+            <h4 class="alert-heading">It's working!</h4>
+            <p>This form is a sample. We put it together for three reasons:</p>
+
+            <ul>
+                <li>It demonstrates that you can put a lot of fields of different types, and that form will properly collect them,</li>
+                <li>Active Collab Customer Care team actually uses a form like this when they submit a bug to our developers.</li>
+            </ul>
+
+            <p>Once <a href="#" target="_blank">connected</a>, you will be able to submit this form and see how the resulting task looks like in ActiveCollab.</p>
+        </div>
+
         <div class="container" id="main-form">
             <h1>Report a bug</h1>
-
-            <div class="bg-info">
-                <p>This form is a sample. We put it together for two reasons:</p>
-
-                <ul>
-                    <li>It demonstrates that you can put a lot of fields of different types, and that form will properly collect them,</li>
-                    <li>Active Collab Customer Care team actually uses a form like this when they submit a bug to our developers.</li>
-                </ul>
-            </div>
 
             <form action="submit.php" method="post" onsubmit="myButton.disabled = true; return true;">
                 <div class="form-group">
@@ -107,7 +110,7 @@
                 </div>
 
                 <div class="form-group">
-                    <input type="submit" name="myButton" value="Submit" /><br><br><br>
+                    <input type="submit" name="myButton" value="Submit" />
                 </div>
             </form>
         </div>
