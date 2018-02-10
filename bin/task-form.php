@@ -21,7 +21,7 @@ if (php_sapi_name() != 'cli') {
     exit(1);
 }
 
-require_once 'vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 $application = new Application('Active Collab TaskForm', '1.0.0');
 $application->add(new ConnectCloudCommand());
