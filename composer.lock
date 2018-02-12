@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "bd82db40b15f80ff3b7239ba859cf134",
+    "content-hash": "1299a70b9351c0f3d5c16fe3b8cac177",
     "packages": [
         {
             "name": "activecollab/activecollab-feather-sdk",
-            "version": "3.1.2",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/activecollab/activecollab-feather-sdk.git",
-                "reference": "266304812a25385991e696ce04bb3ce6e3ad3cfe"
+                "reference": "41d1e9d34bb66d93d1b437e1af2eebb21f4e6bc3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/activecollab/activecollab-feather-sdk/zipball/266304812a25385991e696ce04bb3ce6e3ad3cfe",
-                "reference": "266304812a25385991e696ce04bb3ce6e3ad3cfe",
+                "url": "https://api.github.com/repos/activecollab/activecollab-feather-sdk/zipball/41d1e9d34bb66d93d1b437e1af2eebb21f4e6bc3",
+                "reference": "41d1e9d34bb66d93d1b437e1af2eebb21f4e6bc3",
                 "shasum": ""
             },
             "require": {
@@ -25,7 +25,7 @@
                 "php": ">=5.6.0"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "~1.0"
+                "friendsofphp/php-cs-fixer": "^2.0"
             },
             "type": "library",
             "autoload": {
@@ -40,7 +40,7 @@
             "authors": [
                 {
                     "name": "Ilija Studen",
-                    "email": "ilija.studen@gmail.com"
+                    "email": "ilija.studen@activecollab.com"
                 }
             ],
             "description": "This is a simple PHP library that makes communication with Active Collab API easy",
@@ -50,7 +50,7 @@
                 "api",
                 "sdk"
             ],
-            "time": "2017-05-10T09:18:55+00:00"
+            "time": "2018-02-10T06:58:52+00:00"
         }
     ],
     "packages-dev": [
@@ -1137,7 +1137,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "activecollab/activecollab-feather-sdk": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
