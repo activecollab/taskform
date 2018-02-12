@@ -26,8 +26,8 @@ class ConnectSelfHostedCommand extends ConnectCommand
     {
         $this
             ->setName('connect:self-hosted')
-            ->setDescription('Configure connection to Active Collab hosted on your server')
-            ->addArgument('url', InputArgument::REQUIRED, 'URL where Active Collab is installed');
+            ->setDescription('Configure connection to ActiveCollab hosted on your server')
+            ->addArgument('url', InputArgument::REQUIRED, 'URL where ActiveCollab is installed');
 
         $this->configureAuthArgumentsAndOptions();
     }
@@ -42,7 +42,7 @@ class ConnectSelfHostedCommand extends ConnectCommand
         $password = $this->getPassword($input, $output);
         $ssl_verify_peer = $this->getSslVerifyPeer($input);
 
-        $authenticator = new SelfHosted('Active Collab', 'TaskForm', $email, $password, $url);
+        $authenticator = new SelfHosted('ActiveCollab', 'TaskForm', $email, $password, $url);
         $authenticator->setSslVerifyPeer($ssl_verify_peer);
 
         $output->writeln('Authenticating...');

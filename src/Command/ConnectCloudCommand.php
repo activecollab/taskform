@@ -26,7 +26,7 @@ class ConnectCloudCommand extends ConnectCommand
     {
         $this
             ->setName('connect:cloud')
-            ->setDescription('Configure connection to Active Collab hosted on activecollab.com');
+            ->setDescription('Configure connection to ActiveCollab hosted on activecollab.com');
 
         $this->configureAuthArgumentsAndOptions();
     }
@@ -40,7 +40,7 @@ class ConnectCloudCommand extends ConnectCommand
         $password = $this->getPassword($input, $output);
         $ssl_verify_peer = $this->getSslVerifyPeer($input);
 
-        $authenticator = new Cloud('Active Collab', 'TaskForm', $email, $password);
+        $authenticator = new Cloud('ActiveCollab', 'TaskForm', $email, $password);
         $authenticator->setSslVerifyPeer($ssl_verify_peer);
 
         $output->writeln('Authenticating...');
@@ -68,7 +68,7 @@ class ConnectCloudCommand extends ConnectCommand
     private function getAccountId(InputInterface $input, OutputInterface $output, array $accounts)
     {
         if (empty($accounts)) {
-            throw new RuntimeException("You don't have any Active Collab accounts to choose from");
+            throw new RuntimeException("You don't have any ActiveCollab accounts to choose from");
         }
 
         $output->writeln('You have access to these accounts:');

@@ -26,7 +26,7 @@ use Symfony\Component\Console\Question\Question;
 abstract class ConnectCommand extends Command
 {
     /**
-     * Get Active Collab SDK Client instance.
+     * Get ActiveCollab SDK Client instance.
      *
      * @param  InputInterface  $input
      * @param  OutputInterface $output
@@ -68,7 +68,7 @@ abstract class ConnectCommand extends Command
             $this->writeConfigFile($output, $token, $project_id);
 
             $output->writeln('');
-            $output->writeln('All done, <info>connection to Active Collab has been configured</info>. Form can now be used to submit to task in Active Collab.');
+            $output->writeln('All done, <info>connection to ActiveCollab has been configured</info>. Form can now be used to submit to task in Active Collab.');
         } catch (Exception $e) {
             $output->writeln('<error>Error</error>: ' . $e->getMessage());
 
@@ -197,7 +197,7 @@ abstract class ConnectCommand extends Command
         }
 
         if (empty($project_id_names_map)) {
-            throw new RuntimeException("You don't have access to any of the projects in that Active Collab");
+            throw new RuntimeException("You don't have access to any of the projects in that ActiveåCollab");
         }
 
         $output->writeln('Here is a list of active projects that you have access to:');
