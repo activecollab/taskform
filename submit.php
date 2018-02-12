@@ -11,6 +11,7 @@ namespace ActiveCollab\TaskForm;
 use ActiveCollab\SDK\Client;
 use ActiveCollab\SDK\Exceptions\AppException;
 use ActiveCollab\SDK\Token;
+use Exception;
 
 require_once 'vendor/autoload.php';
 
@@ -62,6 +63,7 @@ function http_error($message, $code, $reason = null)
     die();
 }
 
+$config = [];
 
 if (is_file(__DIR__ . '/config.php')) {
     $config = require 'config.php';
@@ -72,16 +74,12 @@ if (is_file(__DIR__ . '/config.php')) {
         }
     }
 } else {
-    http_error('Internal Server Error', 500, 'Task form is not connected to Active Collab. Please run connect.php script using command line to make a connection.');
+    http_error('Internal Server Error', 500, 'Task form is not connected to ActiveCollab. Please run connect.php script using command line to make a connection.');
 }
 
 if (empty($_POST)) {
     http_error('Bad Request', 400, 'POST data expected.');
 }
-
-print '<pre>';
-var_dump($_POST);
-print '</pre>';
 
 if (array_key_exists('name', $_POST)) {
     $name = trim($_POST['name']);
@@ -166,21 +164,27 @@ $token = new Token($config['token'], $config['url']);
 $client = new Client($token);
 
 try {
-    // Location of task
-    $result = $client->post("projects/{$config['project_id']}/tasks", [
-        'name' => $name,
-        'body' => $body,
-        'created_by_id' => 0,
-        'created_by_name' => $submitted_by_name,
-        'created_by_email' => $submitted_by_email,
-//        'task_list_id' => 1,
-    ]);
+    $result = $client->post(
+        "projects/{$config['project_id']}/tasks",
+        [
+            'name' => $name,
+            'body' => $body,
+            'created_by_id' => 0,
+            'created_by_name' => $submitted_by_name,
+            'created_by_email' => $submitted_by_email,
+        ]
+    );
 
     if ($result->isJson()) {
-        print '<pre>';
-        print_r($result->getJson());
-        print '</pre>';
+        $result_json = $result->getJson();
+
+        if (!empty($result_json['single']['id'])) {
+            print '<h1>Thank you</h1>';
+            print sprintf('Request #%d has been submitted.', $result_json['single']['id']);
+        } else {
+            http_error('Failed to submit your request.', 500);
+        }
     }
-} catch (AppException $e) {
-    print $e->getMessage() . '<br><br>';
+} catch (Exception $e) {
+    http_error($e->getMessage(), 500);
 }
